@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: cargo build --release
+    - uses: actions/upload-artifact@v4
+      with:
+        name: build.vim-esc_windows-x64
+        path: target/release/vim-esc.exe
+        
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: cargo install cargo-bundle
+    - run: cargo bundle --release
+    - uses: actions/upload-artifact@v4
+      with:
+        name: build.vim-esc_macos-arm64
+        path: target/release/bundle/osx/vim-esc.app
