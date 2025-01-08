@@ -1,31 +1,12 @@
+// #![windows_subsystem = "windows"]
+
 use device_query::{DeviceEvents, DeviceState, Keycode};
 use tray_item::{IconSource, TrayItem};
 
 #[cfg(target_os = "windows")]
 mod platform {
-    use windows::{
-        core::PCWSTR,
-        Win32::Globalization::{LoadKeyboardLayoutW, KLF_ACTIVATE},
-        Win32::UI::Input::KeyboardAndMouse::ActivateKeyboardLayout,
-    };
-
     pub fn to_english() {
         println!("Esc pressed! Switching IME to English...");
-
-        // 0x0409 = English (United States) Layout
-        const ENGLISH_US: &str = "00000409";
-
-        unsafe {
-            let wide_layout: Vec<u16> = ENGLISH_US
-                .encode_utf16()
-                .chain(std::iter::once(0))
-                .collect();
-
-            let hkl = LoadKeyboardLayoutW(PCWSTR(wide_layout.as_ptr()), KLF_ACTIVATE);
-            if !hkl.is_invalid() {
-                ActivateKeyboardLayout(hkl, KLF_ACTIVATE);
-            }
-        }
     }
 
     pub fn toggle_lang() {
@@ -65,22 +46,25 @@ mod platform {
 }
 
 fn main() {
+    #[cfg(target_os = "windows")]
+    let mut tray = TrayItem::new("vimESC @luftaquila", IconSource::Resource("tray-default")).unwrap();
+
+    #[cfg(target_os = "macos")]
+    let mut tray = TrayItem::new("vimESC @luftaquila", IconSource::Resource("")).unwrap();
+
+    tray.add_menu_item("vimESC @luftaquila", || { open::that("https://github.com/luftaquila/vim-esc").unwrap(); }).unwrap();
+    tray.add_menu_item("Quit", || { std::process::exit(0); }).unwrap();
+
     let _guard = DeviceState::new().on_key_up(|key| match key {
         Keycode::Escape => platform::to_english(),
         Keycode::Kana => platform::toggle_lang(),
         _ => (),
     });
 
-    #[cfg(target_os = "windows")]
-    let mut tray =
-        TrayItem::new("vimESC @luftaquila", IconSource::Resource("tray-default")).unwrap();
-
     #[cfg(target_os = "macos")]
-    let mut tray = TrayItem::new("vimESC @luftaquila", IconSource::Resource("")).unwrap();
+    tray.inner_mut().display();
 
-    let inner = tray.inner_mut();
-    inner.add_quit_item("Quit");
-    inner.display();
-
-    loop {}
+    loop {
+        std::thread::park();
+    }
 }
