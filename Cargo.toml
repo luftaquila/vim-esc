@@ -1,0 +1,8 @@
+[package]
+name = "vimesc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+device_query = { git = "https://github.com/luftaquila/device_query", branch = "fix/ime" }
+enigo = "0.3.0"
