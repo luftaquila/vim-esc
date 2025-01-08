@@ -1,5 +1,5 @@
 [package]
-name = "vimesc"
+name = "vim-esc"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,3 +10,9 @@ tray-item = "0.10.0"
 
 [build-dependencies]
 embed-resource = "2.3"
+
+[package.metadata.bundle]
+identifier = "io.luftaquila.vimesc"
+# icon = "./8bit-heart.ico"
+short_version = "1.0"
+version = "1.0.0"
