@@ -1,4 +1,5 @@
 use device_query::{DeviceEvents, DeviceState, Keycode};
+use tray_item::{IconSource, TrayItem};
 
 #[cfg(target_os = "windows")]
 mod platform {
@@ -64,13 +65,22 @@ mod platform {
 }
 
 fn main() {
-    let device_state = DeviceState::new();
-
-    let _guard = device_state.on_key_up(|key| match key {
+    let _guard = DeviceState::new().on_key_up(|key| match key {
         Keycode::Escape => platform::to_english(),
         Keycode::Kana => platform::toggle_lang(),
         _ => (),
     });
+
+    #[cfg(target_os = "windows")]
+    let mut tray =
+        TrayItem::new("vimESC @luftaquila", IconSource::Resource("tray-default")).unwrap();
+
+    #[cfg(target_os = "macos")]
+    let mut tray = TrayItem::new("vimESC @luftaquila", IconSource::Resource("")).unwrap();
+
+    let inner = tray.inner_mut();
+    inner.add_quit_item("Quit");
+    inner.display();
 
     loop {}
 }
