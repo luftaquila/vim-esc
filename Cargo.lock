@@ -627,11 +627,13 @@ checksum = "adb9e6ca4f869e1180728b7950e35922a7fc6397f7b641499e8f3ef06e50dc83"
 
 [[package]]
 name = "vim-esc"
-version = "0.2.0"
+version = "1.0.0"
 dependencies = [
+ "core-foundation 0.10.0",
  "device_query",
  "embed-resource",
  "enigo",
+ "libc",
  "open",
  "tray-item",
  "windows 0.59.0",
