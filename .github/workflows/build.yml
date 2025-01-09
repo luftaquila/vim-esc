@@ -19,7 +19,7 @@ jobs:
     - run: cargo build --release
     - uses: actions/upload-artifact@v4
       with:
-        name: build.vim-esc_windows-x64
+        name: vim-esc_windows-x64
         path: target/release/vim-esc.exe
         
   build-macos:
@@ -31,5 +31,5 @@ jobs:
     - run: cargo bundle --release
     - uses: actions/upload-artifact@v4
       with:
-        name: build.vim-esc_macos-arm64
-        path: target/release/bundle/osx/vim-esc.app
+        name: vim-esc_macos-arm64
+        path: target/release/bundle/osx
